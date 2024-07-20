@@ -1,0 +1,108 @@
+﻿<Window x:Class="YoutubeDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YoutubeDownloader"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Normal"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        xmlns:model="clr-namespace:YoutubeDownloader.Model"
+        Icon="YouTube.ico"
+        xmlns:converter="clr-namespace:YoutubeDownloader.Converters"
+        Background="{x:Null}"
+        mc:Ignorable="d"
+        Title="YouTube Downloader" Height="550" Width="800">
+    <Window.Resources>
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+        <converter:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </Window.Resources>
+    <Border BorderBrush="Red" Margin="5" BorderThickness="2" Background="LightSkyBlue">
+        <Grid x:Name="MainGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="1.1*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Stretch"
+                        Margin="10,10,10,10"
+                        VerticalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Label Content="Paste Video Url Here :-" FontSize="15" Foreground="White"
+                           Margin="5"
+                           MinWidth="{Binding ElementName=DownloadLabel,Path=ActualWidth}"
+                           VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Model.VideoUrlPath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                             VerticalContentAlignment="Center"
+                             HorizontalAlignment="Center"
+                             FontSize="15"
+                             IsEnabled="{Binding Model.EnabledUI,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                             VerticalAlignment="Center"
+                             MinWidth="400" Height="30" Margin="20"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <Label Content="Please Select Location Of Download :-" FontSize="15" Foreground="White"
+                           Margin="5"
+                           Name="DownloadLabel"
+                            VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Model.DownloadLocation,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                VerticalContentAlignment="Center"
+                                MaxWidth="300"
+                                IsEnabled="{Binding Model.EnabledUI,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                HorizontalAlignment="Center"
+                                FontSize="15"
+                                VerticalAlignment="Center" Height="30" Margin="20"/>
+                    <Button Content="Browse Folder" HorizontalAlignment="Right" FontSize="15"
+                            Padding="8"
+                            VerticalAlignment="Center"
+                            Margin="0,5,0,5"
+                            IsEnabled="{Binding Model.EnabledUI,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                            Command="{Binding BrowserFolder}"
+                            BorderBrush="Lime" BorderThickness="2"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Visibility="{Binding ElementName=DownloadButton,Path=Content,Converter={StaticResource StringToVisibilityConverter}}">
+                    <Label Content="Please Select Quality:-" Foreground="White" FontSize="14"/>
+                    <ComboBox MaxDropDownHeight="150" Foreground="Blue" MinWidth="100"
+                              VerticalContentAlignment="Center"
+                              HorizontalContentAlignment="Left"
+                              ItemsSource="{Binding Model.Quality,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type model:QualityDetails}">
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                              Margin="5"/>
+                                    <TextBlock Text="{Binding Title,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                               Margin="5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <Button Content="{Binding Model.Title}" HorizontalAlignment="Center" FontSize="20" Padding="5"
+                        Margin="0,5,50,5"
+                        x:Name="DownloadButton"
+                        IsEnabled="{Binding Model.EnabledUI,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        Command="{Binding StartDownload}"
+                        CommandParameter="{Binding}"
+                        BorderBrush="Lime" BorderThickness="2"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical"
+                        Grid.Row="1">
+                <ProgressBar BorderBrush="Red"
+                             Height="20"
+                             BorderThickness="2"
+                             Visibility="{Binding Model.EnableProgress,Converter={StaticResource BooleanToVisibility}}"
+                             Margin="10"
+                             IsIndeterminate="True"/>
+                <TextBlock Text="{Binding Model.Status,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                           FontSize="20" FontWeight="DemiBold"
+                           TextWrapping="Wrap"
+                           Margin="10"/>
+            </StackPanel>
+            
+        </Grid>
+    </Border>
+</Window>
